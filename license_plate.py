@@ -2,14 +2,17 @@
 #coding=utf-8
 
 import cv2
+import os
 from PIL import Image
 import pytesseract
 import time
 import numpy as np
-watch_cascade = cv2.CascadeClassifier('cascade.xml')
-image = cv2.imread(r"C:\Users\HP\Desktop\1.jpg")
+from datetime import datetime
+import cherrypy
+
 
 def detectPlateRough(image_gray,resize_h = 720,en_scale =1.08 ,top_bottom_padding_rate = 0.05):
+        global watch_cascade
         if top_bottom_padding_rate>0.2:
             print("error:top_bottom_padding_rate > 0.2:",top_bottom_padding_rate)
             exit(1)
@@ -40,10 +43,10 @@ def detectPlateRough(image_gray,resize_h = 720,en_scale =1.08 ,top_bottom_paddin
         return cropped_images
 
 def cropImage(image,rect):
-        cv2.imshow("imageShow", image)
+        # cv2.imshow("imageShow", image)
         cv2.waitKey(0)
         x, y, w, h = computeSafeRegion(image.shape,rect)
-        cv2.imwrite(r"C:\Users\HP\Desktop\SGH_HACKATHON\trial.png", image[y:y+h,x:x+w])
+        cv2.imwrite(os.getcwd()+"yo.png", image[y:y+h,x:x+w])
         # print(pytesseract.image_to_string(image[y:y+h,x:x+w]))
         cv2.waitKey(0)
         return image[y:y+h,x:x+w]
@@ -71,16 +74,54 @@ def computeSafeRegion(shape,bounding_rect):
         if right > max_right:
             right = max_right
         return [left,top,right-left,bottom-top]
+timer={}
+class license_plate(object):
+    def __init__(self):
+        global watch_cascade
+        watch_cascade = cv2.CascadeClassifier('cascade.xml')
 
-images = detectPlateRough(image,image.shape[0],top_bottom_padding_rate=0.1)
-array = np.array(images)
+
+    @cherrypy.expose()
+    def detect_enter(self,im_no):
+        imstr = os.getcwd() + "\\"+im_no + ".jpg"
+        print(imstr)
+        image = cv2.imread(imstr)
+        print("yo")
+        images = detectPlateRough(image, image.shape[0], top_bottom_padding_rate=0.1)
+        img = cv2.imread(os.getcwd()+"yo.png", cv2.IMREAD_COLOR)
+        car_no=pytesseract.image_to_string(img)
+        print(car_no)
+        timer.update({car_no:time.time()})
+        print(datetime.now())
+        return {str(car_no):"success",str(datetime.now()):"ok"}
+
+    @cherrypy.expose()
+    def detect_exit(self,im_no):
+        imstr = os.getcwd() + "\\" + im_no + ".jpg"
+        print(imstr)
+        image = cv2.imread(imstr)
+        print("yo")
+        images = detectPlateRough(image, image.shape[0], top_bottom_padding_rate=0.1)
+        img = cv2.imread(os.getcwd() + "yo.png", cv2.IMREAD_COLOR)
+        car_no = pytesseract.image_to_string(img)
+        print(car_no)
+        duration=time.time()-timer[car_no]
+        print(duration)
+        return {str(car_no): "success", str(duration) :"ok"}
+cherrypy.server.socket_host='0.0.0.0'
+cherrypy.config.update({'server.socket_port':8080})
+cherrypy.quickstart(license_plate())
+
+
+
+
+# array = np.array(images)
 # print(array)
 
 # img=Image.fromarray(array)
 
 # cv2.imwrite(r"C:\Users\HP\Desktop\SGH_HACKATHON\trial.png",images)
 # config = ('-l eng --oem 1 --psm 3')
-img = cv2.imread( r"C:\Users\HP\Desktop\SGH_HACKATHON\download1.png", cv2.IMREAD_COLOR)
+
 # cv2.imshow("./plate.png",images)
-custom_config = r'--oem 3 --psm 6'
-print(pytesseract.image_to_string(img))
+# custom_config = r'--oem 3 --psm 6'
