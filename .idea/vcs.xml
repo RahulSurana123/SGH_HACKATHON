@@ -2,5 +2,9 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+<<<<<<< HEAD
+=======
+    <mapping directory="$PROJECT_DIR$/tessaract/tesseract-vs2013" vcs="Git" />
+>>>>>>> 27152cca011c2e34a99aa12b903e80050960074b
   </component>
 </project>
