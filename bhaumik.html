@@ -1,0 +1,62 @@
+<html>  
+    <head>
+                       <title>  </title>
+	<script>
+var url="";
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+     document.getElementById("demo").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "http://192.168.43.108:8080/detect_exit?im_no=1", true);
+  xhttp.send();
+}
+
+function lock() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+     document.getElementById("demo1").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "http://192.168.43.108:8080/detect_enter?im_no=1", true);
+  xhttp.send();
+}
+function parking() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+     document.getElementById("demo2").innerHTML = this.responseText;
+var inputVal = document.getElementById("firstname").value;
+url="http://192.168.43.250:8080/update?p="+tostring(inputVal);
+console.log(url);
+    }
+  };
+  xhttp.open("GET",url, true);
+  xhttp.send();
+}
+
+	</script>
+      </head>
+      <body>
+                  <center>  <b>  <h1>  </h1> </b> </center>
+                   <p>  
+	<br>
+<input type="text" id="firstname" name="parking_no">
+	<button onClick="loadDoc()">detect exit</button>
+                  <button onClick="lock()">detect entry</button>
+                  <button onClick="parking()">update</button>
+
+	<br>
+                    <pre>
+                                
+
+                                </pre>
+                                
+                                              <p><center> <a href =''q2. html''>   </a> </center>   </p>
+
+                           </body>
+             
+            </html>
