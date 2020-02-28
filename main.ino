@@ -1,28 +1,41 @@
 //template<class T> inline Print &operator <<(Print &obj, T arg) { obj.print(arg); return obj; }
-bool val[2];
-bool out[2];
+bool val[29];
+bool out[29];
 void setup() {
   pinMode(2,INPUT);
   pinMode(3,INPUT);
   pinMode(4,INPUT);
   Serial.begin(9600); 
+  
 }
+int k=0;
 
 void loop() {
   
- for(int i=0;i<=2;i++)
-          {
-            if (i==0)
-            {Serial.print("");}
-            
-            val[i]=digitalRead(i+2);
-             Serial.print(val[i]);
-             if(i==0||i==1)
-             Serial.print(",");
-             
-             if(i==2)
-             Serial.print("\n");
+ for(int i=0,j=0;i<=29;i++)
+          { 
+                      
+            val[i]=digitalRead(k+2);
+            if(val[i]==0)
+            {
+              
+                out[j]=i;
+                Serial.print(i);
+                Serial.print(" ");
+                j++;
+              
+            }
+//             Serial.print(val[i]);
+//             if(i==0||i==1)
+//             Serial.print(",");
+             k++;
+             if(k>2)
+                k=0;
+             if(i==29)
+                Serial.print("\n");
           }
+
+     
 //          Serial.print("{%c,%c,%c}",val[0]?"1":"0",val[1]?"1":"0",val[2]?"1":"0");
 //  for(int i=0;i<=2;i++)
 //          {
